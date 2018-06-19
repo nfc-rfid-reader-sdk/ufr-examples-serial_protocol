@@ -382,6 +382,16 @@ void ufr_com_protocol_sending_commandFrame::OnbSendClick(wxCommandEvent& event)
 
             ConvertStringToIntArray(CMD_EXT_Str, Buffer_EXT, 16);
 
+            uint8_t temp = 0;
+
+            for(unsigned int i = 0; i < CMD_EXT_Str.length()/2; i++){
+
+                temp = temp ^(Buffer_EXT[i]);
+
+            }
+
+            Buffer_EXT[CMD_EXT_Str.length()/2] = temp + 7;
+
             ftStatus = FT_Write(ftHandle, Buffer, 7, &BytesWritten);
 
             ftStatus = FT_Read(ftHandle, Buffer_to_read, sizeof(Buffer_to_read), &BytesReturned);
