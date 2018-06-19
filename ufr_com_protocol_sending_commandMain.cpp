@@ -11,11 +11,11 @@
 #include <wx/msgdlg.h>
 #include "ftdi.h"
 #include "ftd2xx.h"
+#include "func.h"
 #include <iomanip>
 #include <string>
 #include <string.h>
 #include <cstring>
-#include <algorithm>
 #include <iostream>
 #define CMD_HEADER 0x55
 #define CMD_TRAILER 0xAA
@@ -77,7 +77,9 @@ const long ufr_com_protocol_sending_commandFrame::ID_STATICTEXT6 = wxNewId();
 const long ufr_com_protocol_sending_commandFrame::ID_TEXTCTRL6 = wxNewId();
 const long ufr_com_protocol_sending_commandFrame::ID_BUTTON4 = wxNewId();
 const long ufr_com_protocol_sending_commandFrame::ID_STATICTEXT7 = wxNewId();
+const long ufr_com_protocol_sending_commandFrame::ID_STATICTEXT12 = wxNewId();
 const long ufr_com_protocol_sending_commandFrame::ID_GRID1 = wxNewId();
+const long ufr_com_protocol_sending_commandFrame::ID_TEXTCTRL9 = wxNewId();
 const long ufr_com_protocol_sending_commandFrame::ID_STATICTEXT11 = wxNewId();
 const long ufr_com_protocol_sending_commandFrame::ID_GRID3 = wxNewId();
 const long ufr_com_protocol_sending_commandFrame::ID_STATICTEXT8 = wxNewId();
@@ -148,7 +150,7 @@ ufr_com_protocol_sending_commandFrame::ufr_com_protocol_sending_commandFrame(wxW
     GridSizer2->Add(StaticText9, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     CMD_EXT_LABEL = new wxTextCtrl(this, ID_TEXTCTRL7, wxEmptyString, wxDefaultPosition, wxSize(370,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL7"));
     GridSizer2->Add(CMD_EXT_LABEL, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-    GridSizer2->Add(0,0,1, wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL, 5);
+    GridSizer2->Add(-1,-1,1, wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL, 5);
     StaticText6 = new wxStaticText(this, ID_STATICTEXT6, _("CMD Status : "), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT6"));
     GridSizer2->Add(StaticText6, 1, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 5);
     Command_Status = new wxTextCtrl(this, ID_TEXTCTRL6, wxEmptyString, wxDefaultPosition, wxSize(370,-1), wxTE_READONLY|wxTE_CENTRE, wxDefaultValidator, _T("ID_TEXTCTRL6"));
@@ -156,9 +158,11 @@ ufr_com_protocol_sending_commandFrame::ufr_com_protocol_sending_commandFrame(wxW
     bClear = new wxButton(this, ID_BUTTON4, _("Clear"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON4"));
     GridSizer2->Add(bClear, 1, wxALL|wxALIGN_RIGHT|wxALIGN_TOP, 5);
     GridSizer1->Add(GridSizer2, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-    GridSizer4 = new wxGridSizer(4, 1, -30, 0);
+    GridSizer4 = new wxGridSizer(2, 2, -30, 0);
     StaticText7 = new wxStaticText(this, ID_STATICTEXT7, _("SENT CMD : "), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT7"));
     GridSizer4->Add(StaticText7, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText12 = new wxStaticText(this, ID_STATICTEXT12, _("Function informations : "), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT12"));
+    GridSizer4->Add(StaticText12, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     CMD_GRID = new wxGrid(this, ID_GRID1, wxDefaultPosition, wxDefaultSize, 0, _T("ID_GRID1"));
     CMD_GRID->CreateGrid(1,7);
     CMD_GRID->EnableEditing(true);
@@ -176,6 +180,8 @@ ufr_com_protocol_sending_commandFrame::ufr_com_protocol_sending_commandFrame(wxW
     CMD_GRID->SetDefaultCellFont( CMD_GRID->GetFont() );
     CMD_GRID->SetDefaultCellTextColour( CMD_GRID->GetForegroundColour() );
     GridSizer4->Add(CMD_GRID, 1, wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL, 5);
+    Function_Label = new wxTextCtrl(this, ID_TEXTCTRL9, wxEmptyString, wxDefaultPosition, wxSize(350,60), wxTE_MULTILINE|wxTE_READONLY, wxDefaultValidator, _T("ID_TEXTCTRL9"));
+    GridSizer4->Add(Function_Label, 1, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 5);
     GridSizer1->Add(GridSizer4, 1, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 5);
     GridSizer5 = new wxGridSizer(4, 1, -30, 0);
     StaticText11 = new wxStaticText(this, ID_STATICTEXT11, _("ACKNOWLEDGE :"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT11"));
@@ -353,6 +359,21 @@ void ufr_com_protocol_sending_commandFrame::OnbSendClick(wxCommandEvent& event)
     Buffer[5] = (uint8_t)ConvertStringToInt(CMD_PAR1_Str, 16);
     Buffer[6] = ((((((Buffer[0]^Buffer[1])^Buffer[2])^Buffer[3])^Buffer[4])^Buffer[5])+7);
 
+
+    Function_Label->Clear();
+    Function_Label->SetValue("Function name : " + FuncMap[Buffer[1]] +
+                             "\n\nCMD : ");
+      for(unsigned int i = 0; i < 7; i++){
+
+                Buffer_to_read_integer[i] = Buffer[i];
+
+                sprintf(BUFFER_CHAR, "%02X", Buffer_to_read_integer[i]);
+
+                Function_Label->AppendText("0x");
+                Function_Label->AppendText(BUFFER_CHAR);
+                Function_Label->AppendText(" ");
+    }
+
     if(Buffer[3] > 0x00){
 
             CMD_EXT = CMD_EXT_LABEL->GetValue();
@@ -393,7 +414,14 @@ void ufr_com_protocol_sending_commandFrame::OnbSendClick(wxCommandEvent& event)
 
             Command_Status->SetValue("Command successfully sent.");
 
-            ftStatus = FT_Write(ftHandle, Buffer_EXT, CMD_EXT_Str.length()/2, &BytesWritten);
+            ftStatus = FT_Write(ftHandle, Buffer_EXT, sizeof(Buffer_EXT), &BytesWritten);
+
+            if(ftStatus != FT_OK){
+
+        Command_Status->SetValue("Failed to send command. Try again.");
+
+    }else{
+
 
             ftStatus = FT_Read(ftHandle, Buffer_to_read, sizeof(Buffer_to_read), &BytesReturned);
 
@@ -405,11 +433,11 @@ void ufr_com_protocol_sending_commandFrame::OnbSendClick(wxCommandEvent& event)
 
                     RSP_GRID->SetCellValue(0, i, BUFFER_CHAR);
 
-            }
+                }
 
-            if(Buffer_to_read[0] != 0xDE){
+          if(Buffer_to_read[0] == 0xEC){
 
-                RSP_EXT_LABEL->SetValue("Failed to receive response. Try again.");
+                RSP_EXT_LABEL->SetValue("ERROR.");
 
             }else{
 
@@ -432,9 +460,14 @@ void ufr_com_protocol_sending_commandFrame::OnbSendClick(wxCommandEvent& event)
             }
 
             }
+
+        }
     }
  ///-----------------------------------------------------------------------------------------------------------
     }else{
+
+    CMD_EXT_LABEL->Clear();
+    ACKNOWLEDGE_GRID->ClearGrid();
 
     ftStatus = FT_Write(ftHandle, Buffer, 7, &BytesWritten);
 
@@ -468,9 +501,9 @@ void ufr_com_protocol_sending_commandFrame::OnbSendClick(wxCommandEvent& event)
 
             }
 
-            if(Buffer_to_read[0] != 0xDE){
+            if(Buffer_to_read[0] == 0xEC){
 
-                RSP_EXT_LABEL->SetValue("Failed to receive response. Try again.");
+                RSP_EXT_LABEL->SetValue("ERROR.");
 
             }else{
 
@@ -489,6 +522,10 @@ void ufr_com_protocol_sending_commandFrame::OnbSendClick(wxCommandEvent& event)
                     RSP_EXT_LABEL->AppendText(BUFFER_CHAR);
 
                 }
+
+            }else{
+
+                RSP_EXT_LABEL->Clear();
 
             }
 
@@ -545,6 +582,8 @@ void ufr_com_protocol_sending_commandFrame::OnbClearClick(wxCommandEvent& event)
     ACKNOWLEDGE_GRID->ClearGrid();
 
     Connect_Status->SetBackgroundColour("white");
+
+    Function_Label->Clear();
 
 }
 

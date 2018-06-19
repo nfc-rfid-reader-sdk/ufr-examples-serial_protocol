@@ -59,7 +59,9 @@ class ufr_com_protocol_sending_commandFrame: public wxFrame
         static const long ID_TEXTCTRL6;
         static const long ID_BUTTON4;
         static const long ID_STATICTEXT7;
+        static const long ID_STATICTEXT12;
         static const long ID_GRID1;
+        static const long ID_TEXTCTRL9;
         static const long ID_STATICTEXT11;
         static const long ID_GRID3;
         static const long ID_STATICTEXT8;
@@ -81,6 +83,7 @@ class ufr_com_protocol_sending_commandFrame: public wxFrame
         wxGrid* RSP_GRID;
         wxStaticText* StaticText10;
         wxStaticText* StaticText11;
+        wxStaticText* StaticText12;
         wxStaticText* StaticText1;
         wxStaticText* StaticText2;
         wxStaticText* StaticText3;
@@ -98,6 +101,7 @@ class ufr_com_protocol_sending_commandFrame: public wxFrame
         wxTextCtrl* CMD_PAR1_LABEL;
         wxTextCtrl* Command_Status;
         wxTextCtrl* Connect_Status;
+        wxTextCtrl* Function_Label;
         wxTextCtrl* RSP_EXT_LABEL;
         //*)
 

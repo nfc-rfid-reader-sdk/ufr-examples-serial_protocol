@@ -67,6 +67,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="ftdi.h" />
+		<Unit filename="func.h" />
 		<Unit filename="resource.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>

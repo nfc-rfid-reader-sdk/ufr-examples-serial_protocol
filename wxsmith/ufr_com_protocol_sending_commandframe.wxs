@@ -196,14 +196,22 @@
 			</object>
 			<object class="sizeritem">
 				<object class="wxGridSizer" variable="GridSizer4" member="no">
-					<cols>1</cols>
-					<rows>4</rows>
+					<cols>2</cols>
+					<rows>2</rows>
 					<vgap>-30</vgap>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT7" variable="StaticText7" member="yes">
 							<label>SENT CMD : </label>
 						</object>
 						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT12" variable="StaticText12" member="yes">
+							<label>Function informations : </label>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -227,6 +235,15 @@
 							</rowlabels>
 						</object>
 						<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_TEXTCTRL9" variable="Function_Label" member="yes">
+							<size>350,60</size>
+							<style>wxTE_MULTILINE|wxTE_READONLY</style>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
